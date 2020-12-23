@@ -12,7 +12,6 @@ const getLocalStorage = () => {
 };
 
 function App() {
-  document.title = "Dan's ToDo";
   const [name, setName] = useState("");
   const [list, setList] = useState(getLocalStorage());
   const [alert, setAlert] = useState({
@@ -26,10 +25,10 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name) {
-      // show no input value alert
-      showAlert(true, "danger", "Please enter an item!");
+      //if no text input do something
+      showAlert(true, "danger", "Please enter a value!");
     } else if (name && isEditing) {
-      // deal wwitj edit
+      // if user is editing do something
       setList(
         list.map((item) => {
           if (item.id === editId) {
@@ -43,10 +42,11 @@ function App() {
       setIsEditing(false);
       showAlert(true, "success", "value changed");
     } else {
+      // if user is entering text normally
       const newItem = { id: new Date().getTime().toString(), title: name };
       setList([...list, newItem]);
       setName("");
-      showAlert(true, "success", "Item was added!");
+      showAlert(true, "success", "Item added to list");
     }
   };
 
@@ -55,12 +55,12 @@ function App() {
   };
 
   const clearList = () => {
-    showAlert(true, "danger", "All items deleted!");
+    showAlert(true, "danger", "List was cleared!");
     setList([]);
   };
 
-  const removeItem = (id) => {
-    showAlert(true, "danger", "Item was removed!");
+  const clearItem = (id) => {
+    showAlert(true, "danger", "Item was deleted!");
     setList(list.filter((item) => item.id !== id));
   };
 
@@ -80,24 +80,24 @@ function App() {
       <form className="grocery-form" onSubmit={handleSubmit}>
         {alert.show && <Alert {...alert} removeAlert={showAlert} list={list} />}
         <h3>My To Do List</h3>
-        <div class="form-control">
+        <div className="form-control">
           <input
             type="text"
             className="grocery"
-            placeholder="e.g. Feed dog"
+            placeholder="e.g. Workout"
             value={name}
             onChange={(e) => setName(e.target.value)}
           ></input>
-          <button className="submit-btn" type="submit">
+          <button type="submit" className="submit-btn">
             {isEditing ? "edit" : "submit"}
           </button>
         </div>
       </form>
       {list.length > 0 && (
         <div className="grocery-container">
-          <List items={list} removeItem={removeItem} editItem={editItem} />
+          <List items={list} clearItem={clearItem} editItem={editItem} />
           <button className="clear-btn" onClick={() => clearList()}>
-            Clear Items
+            Clear All
           </button>
         </div>
       )}
